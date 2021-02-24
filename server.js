@@ -6,7 +6,7 @@ multer = require('multer'),
 fs = require('fs');
 
 //PORT
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 //init multer storage setting
 const storage = multer.diskStorage({
@@ -114,6 +114,6 @@ app.get('/download', (req,res) => {
 })
 
 //Start Servers
-app.listen(8080, () => {
+app.listen(PORT, () => {
     console.log('App Listening on '+PORT)
 });
