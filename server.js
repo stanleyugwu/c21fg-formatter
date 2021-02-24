@@ -111,7 +111,7 @@ app.post('/upload',upload.single('file') ,(req, res) => {
 //Download Endpoint
 app.get('/download', (req,res) => {
     res.status(200).header('Content-Type','text/plain').download(path.resolve('output','final.txt'),'converted.txt');
-})
+});
 
 //Start Servers
 app.listen(PORT, () => {

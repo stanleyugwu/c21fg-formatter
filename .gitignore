@@ -2,5 +2,5 @@ node_modules
 client/node_modules
 file.doc
 file.txt
-output.txx
+output.txt
 *-lock.json
