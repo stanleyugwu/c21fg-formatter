@@ -1,0 +1,23 @@
+.File{
+    border-bottom:1px solid #555;
+}
+
+.File .action-btn{
+    color: var(--primary);
+}
+.File .format-btn{
+    outline:1px solid var(--primary);
+    padding:0.15rem 1rem;
+}
+.File .groupBy, .File .countPerLine{
+    background:none;
+    border:none;
+    vertical-align: sub;
+    border-bottom:1px solid var(--primary);
+    color: var(--primary);
+}
+.File .help-icon{
+    font-size:smaller;
+    color:var(--primary);
+    vertical-align: sub;
+}

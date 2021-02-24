@@ -1,0 +1,13 @@
+@import './libraries/bootstrap.min.css';
+
+html{
+    font: 16px Arial;
+    --black: black;
+    --primary:#ff9a04 !important;
+    --text: #cfcec7;
+}
+
+body{
+    background: var(--black);
+    color: var(--text);
+}

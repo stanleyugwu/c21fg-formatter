@@ -1,0 +1,28 @@
+.App .upload-section{
+    border: 1px solid var(--text);
+    width:100%;
+}
+.App .btn-block{
+    background: var(--primary);
+    border: none;
+}
+.App .btn-primary{
+    background-color: var(--primary);
+    color: black;
+    font-weight: 500;
+    border:none;
+}
+.App .btn-primary:disabled{
+    background-color: var(--text);
+}
+.App #files{
+    visibility: hidden !important;
+}
+.App .upload-btn{
+    background-color: var(--primary);
+    color: var(--black);
+}
+.App .files-display .files-list{
+    padding-left: 0;
+    list-style: outside disc;
+}
