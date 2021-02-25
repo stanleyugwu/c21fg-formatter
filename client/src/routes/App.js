@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import File from '../components/File';
 import "../styles/components/App.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 const App = () => {
 
@@ -8,7 +10,11 @@ const App = () => {
   const [invalidFileError, setInvalidFileError] = useState(false);
   const [validFiles, setValidFiles] = useState([]);
 
+  //accepted file formats
   const formats = ['.docx','.txt','.doc'];
+
+  //label/input area ref
+  const labelRef = useRef();
 
   //Extract file extension
   const getExtension = (name) => {
@@ -26,6 +32,20 @@ const App = () => {
   const deleteFile = (e,filename) => {
     setValidFiles(validFiles.filter(file => file.name !== filename));
   }
+
+  //handle FIle Drag Enter
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    labelRef.current.classList.add('drag-enter');
+  }
+
+  //handle FIle Drag Leave
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    labelRef.current.classList.remove('drag-enter');
+  }
+
+  
 
   //handle files selection
   const handleFileLoad = (e) => {
@@ -59,17 +79,17 @@ const App = () => {
   }
 
   return (
-    <div className="container-fluid App">
+    <div className="container-fluid App" onDragEnter={handleDragEnter} onDragLeave={handleDragLeave}>
       <div className="row">
         <div className="col-12 text-center">
-          <h5>Click {'"Upload Files"'} button or Drag files into the box below to upload</h5>
+          <h5>Click {'"Upload Files"'} button <span className="d-none d-md-inline d-lg-inline">or Drag files into the box below </span>to upload files</h5>
           <p className="lead text-warning small">
-            Note:: File(s) must be either in .doc or .txt format
+            Note:: File(s) must be either in .doc, .txt, or .docx format
           </p>
         </div>
         <div className="col-md-8 col-lg-10 mx-auto">
             <div className="form-group file-upload-form">
-              <label labelFor="files" className="upload-section p-2">
+              <label labelFor="files" className="upload-section p-2" ref={labelRef}>
                 <input
                   type="file"
                   id="files"
@@ -96,9 +116,15 @@ const App = () => {
               </div>
             )}
             {/* Uploaded Files Display*/}
-            <div className="col-12 text-left files-display">
-              <h5>Uploaded Files:</h5>
-              {!validFiles.length && <small>None</small>}
+            <div className="col-12 text-left files-display p-xs-1">
+              <h5>
+                Uploaded Files: 
+                {/* Help */}
+                <span className="help-icon align-text-top ml-2" onClick={() => alert('Use the first textbox to specify how to group the numbers in the file e.g 100.\nUse the second textbox to specify how many numbers to write per line in the file.')}>
+                    <FontAwesomeIcon icon={faQuestionCircle} size="xs"/>
+                </span>
+              </h5>
+              {!validFiles.length && <small className="text-secondary">None</small>}
               <ul className="files-list mt-4">
                 {validFiles.map((file,idx) => {
                   return (

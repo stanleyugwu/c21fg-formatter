@@ -1,6 +1,9 @@
 .App .upload-section{
-    border: 1px solid var(--text);
+    border: 2px dashed var(--gray-dark);
     width:100%;
+}
+.App .drag-enter{
+    border: 2px dashed var(--primary);
 }
 .App .btn-block{
     background: var(--primary);

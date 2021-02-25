@@ -2,7 +2,7 @@
 import React, {useRef, useState} from 'react';
 import '../styles/components/File.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCloudDownloadAlt, faSpinner, faTrashAlt,faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCloudDownloadAlt, faSpinner, faTrashAlt, faWrench } from '@fortawesome/free-solid-svg-icons'
 
  //Format File Size
  const formatFileSize = (bytes, decimalPoint) => {
@@ -61,54 +61,52 @@ const File = (props) => {
     }
 
     return (
-    <div className="File row" ref={FileRef}>
-        <div className="filename-wrapper col-sm-6 col-md-4 col-lg-5">
+    <div className="File row mb-3 pb-1" ref={FileRef}>
+        <div className="filename-wrapper mr-4 lead align-text-bottom">
             {props.data.name}
             <small> - <b>{formatFileSize(props.data.size)}</b></small>
         </div>
 
-        <div className="filetools-wrapper col-sm-6 col-md-8 col-lg-7">
-            
-            {/* Help */}
-            <span className="help-icon" onClick={() => alert('Use the first textbox to specify how to group the numbers in the file e.g 100.\nUse the second textbox to specify how many numbers to write per line in the file.')}>
-                <FontAwesomeIcon icon={faQuestionCircle}/>
-            </span>
+        <div className="filetools-wrapper d-xs-block mt-xs-2">
 
             {/* TextBoxes */}
             {!formatting && !formatted && (
             <>
-                <input type="number" min={10} max={500} defaultValue={100} className="groupBy ml-3"/>
-                <input type="number" min={5} max={100} defaultValue={10} className="countPerLine ml-3"/>
+                <input type="number" min={10} max={500} defaultValue={100} className="groupBy"/>
+                <input type="number" min={5} max={100} defaultValue={10} className="countPerLine action"/>
             </>
             )}
 
             {/* Formatting Spinner */}
             {formatting && !formatError && (
-                <span>
-                    <small>Formatting </small> 
+                <span className="action">
+                    Formatting
                     <FontAwesomeIcon icon={faSpinner} spin/>
                 </span>)
             }
 
             {/* Format Button */}
             {!formatting && !formatted && (
-                <button onClick={formatFile} className="btn format-btn action-btn ml-3">Format</button>
+                <button onClick={formatFile} className="btn action">
+                    <FontAwesomeIcon icon={faWrench} size="md"/> Format
+                </button>
             )}
 
             {/* Delete Button */}
-            <button className="btn action-btn" onClick={(e) => {props.handleDelete(e,props.data.name)}}>
-                <FontAwesomeIcon icon={faTrashAlt} size="md"/>
+            <button className="btn action" onClick={(e) => {props.handleDelete(e,props.data.name)}}>
+                <FontAwesomeIcon icon={faTrashAlt} size="md"/> Remove
             </button>
 
 
             {/* Download Button */}
             {formatted && 
-                <button onClick={downloadFile} className="btn action-btn">
-                    <FontAwesomeIcon icon={faCloudDownloadAlt} />
+                <button onClick={downloadFile} className="btn action">
+                    <FontAwesomeIcon icon={faCloudDownloadAlt} /> Download
                 </button>
             }
+              
         </div>
-        {formatError && <p className="text-danger">Oops!! Formatting Failed. <a href="#" onClick={formatFile}>retry</a></p>}
+        {formatError && <p className="text-danger ml-3">Oops!! Formatting Failed. <a href="" onClick={formatFile}>retry</a></p>}
     </div>)
 }
 

@@ -1,13 +1,30 @@
-@import './libraries/bootstrap.min.css';
+@import './vendor/bootstrap.min.css';
 
 html{
     font: 16px Arial;
     --black: black;
-    --primary:#ff9a04 !important;
     --text: #cfcec7;
 }
 
 body{
-    background: var(--black);
     color: var(--text);
+    background: url('../images/c21fg-bg.jpg');
+    background-position: top;
+}
+
+.page-inner{
+    background: #000000e5;
+    height: 100vh !important;
+}
+
+#loader{
+    position: fixed;
+    top:0;
+    bottom: 0;
+    background: #000000d0;
+    width:100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999999;
 }
