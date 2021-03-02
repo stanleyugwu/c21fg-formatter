@@ -33,8 +33,14 @@ const App = () => {
     setValidFiles(validFiles.filter(file => file.name !== filename));
   }
 
-  //handle FIle Drag Enter
+  //handle File Drag Enter
   const handleDragEnter = (e) => {
+    e.preventDefault();
+    labelRef.current.classList.add('drag-enter');
+  }
+
+  //handle File drag over
+  const handleDragOver = (e) => {
     e.preventDefault();
     labelRef.current.classList.add('drag-enter');
   }
@@ -79,7 +85,7 @@ const App = () => {
   }
 
   return (
-    <div className="container-fluid App" onDragEnter={handleDragEnter} onDragLeave={handleDragLeave}>
+    <div className="container-fluid App" onDragEnter={handleDragEnter} onDragOver={handleDragOver} onDragLeave={handleDragLeave}>
       <div className="row">
         <div className="col-12 text-center">
           <h5>Click {'"Upload Files"'} button <span className="d-none d-md-inline d-lg-inline">or Drag files into the box below </span>to upload files</h5>

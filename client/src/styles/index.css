@@ -5,16 +5,15 @@ html{
     --black: black;
     --text: #cfcec7;
 }
-
 body{
     color: var(--text);
-    background: url('../images/c21fg-bg.jpg');
+    width:100%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(#000000e8, #000000e8), url('../images/c21fg-bg.jpg') center center;
     background-position: top;
-}
-
-.page-inner{
-    background: #000000e5;
-    height: 100vh !important;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 #loader{

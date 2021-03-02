@@ -62,7 +62,7 @@ const File = (props) => {
 
     return (
     <div className="File row mb-3 pb-1" ref={FileRef}>
-        <div className="filename-wrapper mr-4 lead align-text-bottom">
+        <div className="filename-wrapper mr-4 lead align-text-bottom ml-2">
             {props.data.name}
             <small> - <b>{formatFileSize(props.data.size)}</b></small>
         </div>

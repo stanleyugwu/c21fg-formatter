@@ -18,7 +18,7 @@ const MainApp = () => {
     //clear loader
     useEffect(()=>{
         loader.style.display = 'none';
-    }, [])
+    }, []);
 
     return (
         <div className="page-inner" onDragEnter={dragEnter}>

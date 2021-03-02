@@ -1,5 +1,5 @@
 .App .upload-section{
-    border: 2px dashed var(--gray-dark);
+    border: 2px dashed var(--gray);
     width:100%;
 }
 .App .drag-enter{
