@@ -19,11 +19,11 @@ const storage = multer.diskStorage({
         let ext = getExtension(file.originalname);
         if(ext == '.txt') cb(null,'txt/')
         else {
-          cb(null,'docs')
+          cb(null,'docs/')
         }
     },
     filename(req,file,cb){
-        cb(null, file.originalname)
+        cb(null, String(Math.floor(Math.random() * 999999999)) + file.originalname)
     }
 });
 
@@ -34,18 +34,15 @@ const formatter = require('./utils/formatter.js');
 //file reader
 const reader = require('any-text');
 
-//cleanUp fs
-function wipe(dir){
-    const files = fs.readdirSync(dir);
-    for(file of files){
-        fs.unlinkSync(path.join(dir,file))
-    }
-}
-
 //increment converted files count
-function incrementConverted(){
-    const count = Number(fs.readFileSync('converted_files_count.txt','utf-8'));
-    fs.writeFileSync('converted_files_count.txt',count+1);
+async function incrementConverted(){
+    fs.readFile('converted_files_count.txt','utf-8',(err, data) => {
+        if(err) console.log("Reading count file failed:\n"+err)
+        data = Number(data)+1;
+        fs.writeFile('converted_files_count.txt',data,(err)=>{
+            err && console.log('Error Writing to counts file\n'+err)
+        });
+    });
 }
 
 //init app
@@ -79,45 +76,80 @@ app.post('/upload',upload.single('file') ,(req, res) => {
     const {groupBy = Number(groupBy),countPerLine = Number(countPerLine)} = JSON.parse(req.body.options);
 
     //file name formatting
-    let name = req.file.originalname;
-    let filename = path.resolve('txt',name.substring(0,name.lastIndexOf('.'))) + '.txt';
+    var name = req.file.filename; //make it var to be accessible globally
+    let nameWithTxt = path.resolve('txt',name.substring(0,name.lastIndexOf('.'))) + '.txt';
+    let plainName = name.substring(0,name.lastIndexOf('.'));
+
 
     //do extra conversion if file is .doc or .docx
     if(ext == '.doc' || ext == '.docx'){
 
-        //extract the file content, write it into a new .txt file, and then do the formatting
-        reader.getText(req.file.path).then(data => {
-            return fs.writeFile(filename,data,(err) => {
-                if(err) return Error("Failed Writing to txt");
-                formatter(filename,path.resolve('output'),groupBy,countPerLine).then(done => {
-                    if(done){
-                        wipe('docs');//clear files inside docs
-                        wipe('txt');//clear files inside txt
-                        incrementConverted();//increment converted files counter
-                        res.status(200).send({formatted:true});
-                    }
-                }).catch(e => res.status(500).end(e));
+        (async ()=>{
+
+            //extract the content of the word file and store in a variable
+            let wordFileContent = await reader.getText(path.resolve('docs',name)).then(d => d).catch(e => {
+                console.log('Couldnt read file '+ name + '\n' +e)
+                res.status(500).end(e);
+                return false
             });
-        }).catch(e => res.status(500).end(e))
+
+            //create a new text file and write the word file content into it
+            fs.promises.writeFile(nameWithTxt,wordFileContent).then(() => {
+
+                //format the text file and send the name of the formatted file to the client for download
+                formatter(plainName, nameWithTxt, path.resolve('output')).then(formatted => {
+                    if(formatted){
+                        res.status(200).send({convertedFileName:String(plainName+'.txt')});
+
+                        //increment the count for total converted files
+                        incrementConverted();
+                    }
+                }).catch(e => {
+                    console.log('Couldnt format file '+ name + '\n' +e)
+                    res.status(500).end(e);
+                    return false
+                })
+
+            }).catch(e => {
+                console.log('Couldnt write to file '+ nameWithTxt + '\n' +e)
+                res.status(500).end(e);
+                return false
+            })
+        })()
+
     }else{
-        formatter(filename,path.resolve('output'),groupBy,countPerLine).then(done => {
-            if(done){
-                wipe('docs');
-                wipe('txt');
-                res.status(200).send({formatted:true});
-            }else{
-                return Error('Failed Processing File')
-            }
-        }).catch((e) => {
-            console.log(e)
-            res.status(500).send(e);
-        })
+
+        (async ()=>{
+
+            //format the text file and send the name of the formatted file to the client for download
+            formatter(name, nameWithTxt, path.resolve('output')).then(formatted => {
+                if(formatted){
+                    res.status(200).send({convertedFileName:String(plainName+'.txt')});
+
+                    //increment the count for total converted files
+                    incrementConverted();
+                }
+            }).catch(e => {
+                console.log('Couldnt format file '+ name + '\n' +e)
+                res.status(500).end(e);
+                return false
+            })  
+        })()
+
     }
 });
 
 //Download Endpoint
 app.get('/download', (req,res) => {
-    res.status(200).header('Content-Type','text/plain').download(path.resolve('output','final.txt'),'converted.txt');
+    const files = fs.readdirSync('output');
+    if(!req.query.filename){
+        res.status(500).send('No FileName Argument Supplied');
+    }else if(req.query.filename && Array.from(files).indexOf(req.query.filename) == -1){
+        res.status(400).send('No file with such name');
+    }
+
+    //send file if it exists in the output directory
+    res.status(200).header('Content-Type','text/plain').download(path.resolve('output',req.query.filename), req.query.desiredName || 'converted.txt');
 });
 
 //Start Servers

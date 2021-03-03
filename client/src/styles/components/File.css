@@ -43,3 +43,7 @@
     color:var(--primary);
     vertical-align: sub;
 }
+
+.File .retry-btn {
+    cursor: pointer;
+}

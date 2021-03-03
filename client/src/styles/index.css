@@ -1,10 +1,16 @@
 @import './vendor/bootstrap.min.css';
 
 html{
-    font-size: 16px;
+    font-size: 17px;
     --black: black;
     --text: #cfcec7;
 }
+@media screen and (max-width: var(--breakpoint-lg)){
+    html{
+        font-size: 16px;
+    }
+}
+
 body{
     color: var(--text);
     font-family: system-ui, sans-serif, -apple-system;

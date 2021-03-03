@@ -1,7 +1,7 @@
 .App .upload-section{
     border: 2px dashed var(--gray);
     width:100%;
-    background: #ff6a0049;
+    background: #ff006a30;
 }
 .App .drag-enter{
     border: 2px dashed var(--primary);

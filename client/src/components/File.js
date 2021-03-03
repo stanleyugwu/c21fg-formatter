@@ -21,12 +21,15 @@ const File = (props) => {
     const [formatting, setFormatting] = useState(false);
     const [formatted, setFormatted] = useState(false);
     const [formatError, setFormatError] = useState(false);
+    const [convertedFileName, setConvertedFileName] = useState(null);
     const FileRef = useRef();
 
     //download formatted file by opening a new windows
     // couldnt use fetch to download when using res.download on the server
     const downloadFile = () => {
-        window.open('/download');
+        const desiredName = props.data.name.substring(0, props.data.name.lastIndexOf('.')) + '.txt';
+
+        window.open(`/download?desiredName=${desiredName}&filename=${convertedFileName}`);
     }
 
     //format file
@@ -47,12 +50,14 @@ const File = (props) => {
         //convert
         fetch('/upload', {method:"POST",body:formData}).then(res => {
             return res.json()
-        }).then(({formatted} = false) => {
-            if(formatted){
+        }).then(({convertedFileName}) => {
+            if(convertedFileName){
+                setConvertedFileName(convertedFileName);
                 setFormatted(true);
                 setFormatting(false);
             }else{
-                return Error('Format Error')
+                //Note: dont throw error inside a then function, let Promises do their work
+                throw Error('Format Error, Server Didnt convert file');
             }
         }).catch(e => {
             console.log(e);
@@ -99,14 +104,14 @@ const File = (props) => {
 
 
             {/* Download Button */}
-            {formatted && 
+            {formatted && convertedFileName && 
                 <button onClick={downloadFile} className="btn action">
                     <FontAwesomeIcon icon={faCloudDownloadAlt} /> Download
                 </button>
             }
               
         </div>
-        {formatError && <p className="text-danger ml-3">Oops!! Formatting Failed. <a href="" onClick={formatFile}>retry</a></p>}
+        {formatError && <p className="text-danger ml-3">Oops!! Formatting Failed. <p className="text-primary retry-btn" onClick={formatFile}>retry</p></p>}
     </div>)
 }
 

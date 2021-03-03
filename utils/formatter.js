@@ -1,17 +1,17 @@
 const fs = require("fs");
 const rd = require("readline");
-const sep = require('path').sep
+const resolve = require('path').resolve;
 
-function Formatter(filepath = "../inputTxt/inTxt.txt", outpath, groupBy = 100, countPerLine = 5) {
+function Formatter(inputFileName, inputFilePath = "../txt", outputDirPath = '../output', groupBy = 100, countPerLine = 5) {
   return new Promise((res, rej) => {
     //init reading
     const readline = rd.createInterface({
-      input: fs.createReadStream(filepath),
+      input: fs.createReadStream(inputFilePath),
       terminal: false,
     });
 
     //output setting
-    const output = fs.createWriteStream(outpath+sep+'final.txt' || "../output/output.txt");
+    const output = fs.createWriteStream(resolve(outputDirPath,inputFileName+'.txt') || "../output/451234converted.txt");
 
     var counter = 1;
 
