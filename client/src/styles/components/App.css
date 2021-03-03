@@ -1,6 +1,7 @@
 .App .upload-section{
     border: 2px dashed var(--gray);
     width:100%;
+    background: #ff6a0049;
 }
 .App .drag-enter{
     border: 2px dashed var(--primary);
@@ -9,11 +10,17 @@
     background: var(--primary);
     border: none;
 }
+.App .file-format-note{
+    color: var(--primary);
+}
 .App .btn-primary{
     background-color: var(--primary);
     color: black;
     font-weight: 500;
     border:none;
+}
+.App .uploaded-title{
+    color: var(--gray);
 }
 .App .btn-primary:disabled{
     background-color: var(--text);
@@ -24,6 +31,9 @@
 .App .upload-btn{
     background-color: var(--primary);
     color: var(--black);
+    border-radius: 0px;
+    font-weight: 400;
+    font-family: monospace;
 }
 .App .files-display .files-list{
     padding-left: 0;

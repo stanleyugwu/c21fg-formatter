@@ -18,6 +18,7 @@
     }
     .File .filename-wrapper{
         margin-left: none;
+        font-size: 1.1rem;
     }
     .File .action{
         margin-left: 0.5rem;
@@ -35,7 +36,7 @@
     border:none;
     vertical-align: sub;
     border-bottom:1px solid var(--primary);
-    color: var(--primary);
+    color: #ff6a00d8;
 }
 .File .help-icon{
     font-size:smaller;

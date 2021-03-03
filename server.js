@@ -42,6 +42,12 @@ function wipe(dir){
     }
 }
 
+//increment converted files count
+function incrementConverted(){
+    const count = Number(fs.readFileSync('converted_files_count.txt','utf-8'));
+    fs.writeFileSync('converted_files_count.txt',count+1);
+}
+
 //init app
 const app = express();
 
@@ -85,8 +91,9 @@ app.post('/upload',upload.single('file') ,(req, res) => {
                 if(err) return Error("Failed Writing to txt");
                 formatter(filename,path.resolve('output'),groupBy,countPerLine).then(done => {
                     if(done){
-                        wipe('docs');
-                        wipe('txt');
+                        wipe('docs');//clear files inside docs
+                        wipe('txt');//clear files inside txt
+                        incrementConverted();//increment converted files counter
                         res.status(200).send({formatted:true});
                     }
                 }).catch(e => res.status(500).end(e));

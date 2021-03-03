@@ -31,6 +31,8 @@ const App = () => {
   //delete file
   const deleteFile = (e,filename) => {
     setValidFiles(validFiles.filter(file => file.name !== filename));
+    const input = labelRef.current;
+    input.querySelector('#files').value = '';
   }
 
   //handle File Drag Enter
@@ -88,8 +90,8 @@ const App = () => {
     <div className="container-fluid App" onDragEnter={handleDragEnter} onDragOver={handleDragOver} onDragLeave={handleDragLeave}>
       <div className="row">
         <div className="col-12 text-center">
-          <h5>Click {'"Upload Files"'} button <span className="d-none d-md-inline d-lg-inline">or Drag files into the box below </span>to upload files</h5>
-          <p className="lead text-warning small">
+          <h6>Click {'"Choose Files"'} button below to upload files</h6>
+          <p className="lead file-format-note small">
             Note:: File(s) must be either in .doc, .txt, or .docx format
           </p>
         </div>
@@ -107,7 +109,7 @@ const App = () => {
                   name="files"
                 />
                 <div className="col-12 text-center">
-                  <p className="btn upload-btn lead"><b>Upload Files</b></p>
+                  <p className="btn upload-btn lead"><b>Choose Files</b></p>
                 </div>
               </label>
             </div>
@@ -123,7 +125,7 @@ const App = () => {
             )}
             {/* Uploaded Files Display*/}
             <div className="col-12 text-left files-display p-xs-1">
-              <h5>
+              <h5 className="uploaded-title">
                 Uploaded Files: 
                 {/* Help */}
                 <span className="help-icon align-text-top ml-2" onClick={() => alert('Use the first textbox to specify how to group the numbers in the file e.g 100.\nUse the second textbox to specify how many numbers to write per line in the file.')}>
