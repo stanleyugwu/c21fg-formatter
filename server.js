@@ -33,13 +33,15 @@ const upload = multer({storage});
 const formatter = require('./utils/formatter.js');
 //file reader
 const reader = require('any-text');
+const { url } = require('inspector');
+const { urlencoded } = require('express');
 
 //increment converted files count
 async function incrementConverted(){
     fs.readFile('converted_files_count.txt','utf-8',(err, data) => {
         if(err) console.log("Reading count file failed:\n"+err)
         data = Number(data)+1;
-        fs.writeFile('converted_files_count.txt',data,(err)=>{
+        fs.writeFile('converted_files_count.txt',String(data),(err)=>{
             err && console.log('Error Writing to counts file\n'+err)
         });
     });
@@ -77,8 +79,11 @@ app.post('/upload',upload.single('file') ,(req, res) => {
 
     //file name formatting
     var name = req.file.filename; //make it var to be accessible globally
+    console.log('name '+name)
     let nameWithTxt = path.resolve('txt',name.substring(0,name.lastIndexOf('.'))) + '.txt';
+    console.log('nameWithText '+nameWithTxt)
     let plainName = name.substring(0,name.lastIndexOf('.'));
+    console.log('plainname '+plainName);
 
 
     //do extra conversion if file is .doc or .docx
@@ -99,6 +104,7 @@ app.post('/upload',upload.single('file') ,(req, res) => {
                 //format the text file and send the name of the formatted file to the client for download
                 formatter(plainName, nameWithTxt, path.resolve('output')).then(formatted => {
                     if(formatted){
+                        // console.log(plainName)
                         res.status(200).send({convertedFileName:String(plainName+'.txt')});
 
                         //increment the count for total converted files
@@ -122,7 +128,7 @@ app.post('/upload',upload.single('file') ,(req, res) => {
         (async ()=>{
 
             //format the text file and send the name of the formatted file to the client for download
-            formatter(name, nameWithTxt, path.resolve('output')).then(formatted => {
+            formatter(plainName, nameWithTxt, path.resolve('output')).then(formatted => {
                 if(formatted){
                     res.status(200).send({convertedFileName:String(plainName+'.txt')});
 
@@ -144,12 +150,20 @@ app.get('/download', (req,res) => {
     const files = fs.readdirSync('output');
     if(!req.query.filename){
         res.status(500).send('No FileName Argument Supplied');
-    }else if(req.query.filename && Array.from(files).indexOf(req.query.filename) == -1){
+        return 
+    }
+
+    //decode uri to convert to original file name which corresponds to the one in the file system
+    let filename = decodeURIComponent(req.query.filename);
+    let desiredName = decodeURIComponent(req.query.desiredName || 'converted.txt');
+
+    if(req.query.filename && files.indexOf(filename) === -1){
         res.status(400).send('No file with such name');
+        return
     }
 
     //send file if it exists in the output directory
-    res.status(200).header('Content-Type','text/plain').download(path.resolve('output',req.query.filename), req.query.desiredName || 'converted.txt');
+    res.status(200).header('Content-Type','text/plain').download(path.resolve('output',filename), desiredName);
 });
 
 //Start Servers

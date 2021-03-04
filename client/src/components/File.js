@@ -27,9 +27,12 @@ const File = (props) => {
     //download formatted file by opening a new windows
     // couldnt use fetch to download when using res.download on the server
     const downloadFile = () => {
-        const desiredName = props.data.name.substring(0, props.data.name.lastIndexOf('.')) + '.txt';
 
-        window.open(`/download?desiredName=${desiredName}&filename=${convertedFileName}`);
+        //encode the uri and decode at server to escape & characters and prevent uri error
+        const desiredName = encodeURIComponent(props.data.name.substring(0, props.data.name.lastIndexOf('.')) + '.txt');
+        const filename = encodeURIComponent(convertedFileName);
+
+        window.open(`/download?desiredName=${desiredName}&filename=${filename}`);
     }
 
     //format file
